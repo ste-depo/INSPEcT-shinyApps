@@ -1,0 +1,474 @@
+mat_total <- matMat[id,c("Total_RZ","Total_RH","Total_PA")]#
+#
+	mat_labeled <- cbind(#
+		#t7=unlist(matMat[id,c("Lab7_A","Lab7_B","Lab7_C")]),#
+		t15=unlist(matMat[id,c("Lab15_A","Lab15_B","Lab15_C")]),#
+		t30=unlist(matMat[id,c("Lab30_A","Lab30_B","Lab30_C")]),#
+		# t45=unlist(matMat[id,c("Lab45_A","Lab45_B","Lab45_C")]),#
+		t60=unlist(matMat[id,c("Lab60_A","Lab60_B","Lab60_C")])#
+		)#
+#
+	pre_total <- preMat[id,c("Total_RZ","Total_RH","Total_PA")]#
+#
+	pre_labeled <- cbind(#
+		#t7=unlist(preMat[id,c("Lab7_A","Lab7_B","Lab7_C")]),#
+		t15=unlist(preMat[id,c("Lab15_A","Lab15_B","Lab15_C")]),#
+		t30=unlist(preMat[id,c("Lab30_A","Lab30_B","Lab30_C")]),#
+		# t45=unlist(preMat[id,c("Lab45_A","Lab45_B","Lab45_C")]),#
+		t60=unlist(preMat[id,c("Lab60_A","Lab60_B","Lab60_C")])#
+		)#
+#
+	wt_matT <- rep(mean(unlist(mat_total)),3)#
+	wt_preT <- rep(mean(unlist(pre_total)),3)#
+	wt_matL <- apply(mat_labeled,2,mean,na.rm=TRUE)#
+	wt_preL <- apply(pre_labeled,2,mean,na.rm=TRUE)#
+#
+	wt_matTvar <- rep(var(unlist(mat_total)),3)#
+	wt_preTvar <- rep(var(unlist(pre_total)),3)#
+	wt_matLvar <- apply(mat_labeled,2,var,na.rm=TRUE)#
+	wt_preLvar <- apply(pre_labeled,2,var,na.rm=TRUE)#
+#
+	(wt_data <- cbind(wt_matT, wt_preT, wt_matL, wt_preL))#
+	(wt_datavar <- cbind(wt_matTvar, wt_preTvar, wt_matLvar, wt_preLvar))
+datader <- c(0,0)#
+#	tL <- c(7/60, 1/4, 1/2, 3/4, 1)#
+	tL <- c(1/4, 1/2, 1)#
+#
+	pr <- t(sapply(1:3, function(i)#
+		unlist(optim(c(priorRates(wt_data[i,], datader, tL[i]),1), #
+			sysScaleChisq, data=wt_data[i,], datavar=wt_datavar[i,], datader=datader, tL=tL[i],#
+			control=list(maxit=1e4))[1:4])#
+		))
+pr
+opt <- unlist(optim(c(mean(pr[,1]),pr[3,2],pr[1,2],pr[2,2],pr[3,2],mean(pr[,3]),1,1,1), #
+		sysScaleChisqMT, data=wt_data, datavar=wt_datavar, datader=datader, tL=tL,#
+		control=list(maxit=1e4)))
+opt
+mod <- sysScaleModelMT(opt, datader, tL)#
+#
+par(mfrow=c(2,2))#
+matplot(t(mat_total), type='l'); points(mod[1,])#
+matplot(t(pre_total), type='l'); points(mod[2,])#
+matplot(t(mat_labeled), type='l'); points(mod[3,])#
+matplot(t(pre_labeled), type='l'); points(mod[4,])
+mat_total
+matplot(t(mat_total), type='l')
+t(mat_total)
+matplot(mat_total, type='l')
+ls()
+s
+history()
+history(Inf)
+install.packages('expint')
+library(expint)
+expint(1/2)
+plot(x<-seq(-1,1,length.out=100), expint(x))
+abline(h=0)
+abline(v=0)
+ls()
+s
+history()
+library(INSPEcT)
+data('rpkms', package='INSPEcT')
+idx <- apply( rpkms$foursu_exons > rpkms$foursu_introns , 1, all ) &#
+	apply( rpkms$total_exons > rpkms$total_introns , 1, all )
+table(idx)
+rpkms <- lapply(rpkms, function(x) x[idx,])
+str(rpkms)
+tpts <- c(0, 1/6, 1/3, 1/2, 1, 2, 4, 8, 16)#
+tL <- 1/6#
+mycerIds <- newINSPEcT(tpts, tL, rpkms$foursu_exons, rpkms$total_exons,#
+        rpkms$foursu_introns, rpkms$total_introns, BPPARAM=SerialParam())
+source('~/Dropbox/source/inspect_update/first_guess.R')
+totRpkms <- list()#
+totRpkms$exons       <- rpkms$total_exons#
+totRpkms$exons_var   <- rpkms$total_exons#
+totRpkms$introns     <- rpkms$total_introns#
+totRpkms$introns_var <- rpkms$total_introns#
+#
+labeledRpkms <- list()#
+labeledRpkms$exons       <- rpkms$foursu_exons#
+labeledRpkms$exons_var   <- rpkms$foursu_exons#
+labeledRpkms$introns     <- rpkms$foursu_introns#
+labeledRpkms$introns_var <- rpkms$foursu_introns
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+library(parallel)
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+debug(make_priors_complete)
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+ls()
+BPPARAM
+Q
+undebug(make_priors_complete)
+source('~/Dropbox/source/inspect_update/first_guess.R')
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+source('~/Dropbox/source/inspect_update/first_guess.R')
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+str(out)
+source('~/Dropbox/source/inspect_update/first_guess.R')
+str(out)
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+str(out)
+totRpkms <- list()#
+totRpkms$exons       <- rpkms$total_exons - rpkms$total_introns#
+totRpkms$exons_var   <- rpkms$total_exons - rpkms$total_introns#
+totRpkms$introns     <- rpkms$total_introns#
+totRpkms$introns_var <- rpkms$total_introns#
+#
+labeledRpkms <- list()#
+labeledRpkms$exons       <- rpkms$foursu_exons#
+labeledRpkms$exons_var   <- rpkms$foursu_exons#
+labeledRpkms$introns     <- rpkms$foursu_introns#
+labeledRpkms$introns_var <- rpkms$foursu_introns#
+#
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+k1v1 <- ratesFirstGuess(mycerIds, 'synthesis')
+k1v2 <- out$rates$alpha
+head(k1v1)
+head(k1v2)
+plot(k1v1, k1v2)
+plot(k1v1, k1v2, log='xy')
+plot(k1v1[,1], k1v2[,1], log='xy')
+plot(k1v1[1:6,1], k1v2[1:6,1], log='xy')
+dim(k1v1)
+dim(k1v2)
+plot(k1v1[1:10,1], k1v2[1:10,1], log='xy')
+head(k1v1,10)
+head(k1v2,10)
+str(rpkms)
+idx <- apply( rpkms$foursu_exons > rpkms$foursu_introns , 1, all ) &#
+	apply( rpkms$total_exons > rpkms$total_introns , 1, all ) &#
+	apply( rpkms$foursu_exons > 0 , 1, all ) &#
+	apply( rpkms$foursu_introns > 0 , 1, all ) &#
+	apply( rpkms$total_exons > 0 , 1, all ) &#
+	apply( rpkms$total_introns > 0 , 1, all )
+table(idx)
+library(INSPEcT)#
+data('rpkms', package='INSPEcT')#
+idx <- apply( rpkms$foursu_exons > rpkms$foursu_introns , 1, all ) &#
+	apply( rpkms$total_exons > rpkms$total_introns , 1, all ) &#
+	apply( rpkms$foursu_exons > 0 , 1, all ) &#
+	apply( rpkms$foursu_introns > 0 , 1, all ) &#
+	apply( rpkms$total_exons > 0 , 1, all ) &#
+	apply( rpkms$total_introns > 0 , 1, all ) #
+#
+rpkms <- lapply(rpkms, function(x) x[idx,])#
+#
+tpts <- c(0, 1/6, 1/3, 1/2, 1, 2, 4, 8, 16)#
+tL <- 1/6#
+mycerIds <- newINSPEcT(tpts, tL, rpkms$foursu_exons, rpkms$total_exons,#
+        rpkms$foursu_introns, rpkms$total_introns, BPPARAM=SerialParam())
+totRpkms <- list()#
+totRpkms$exons       <- rpkms$total_exons - rpkms$total_introns#
+totRpkms$exons_var   <- rpkms$total_exons - rpkms$total_introns#
+totRpkms$introns     <- rpkms$total_introns#
+totRpkms$introns_var <- rpkms$total_introns#
+#
+labeledRpkms <- list()#
+labeledRpkms$exons       <- rpkms$foursu_exons#
+labeledRpkms$exons_var   <- rpkms$foursu_exons#
+labeledRpkms$introns     <- rpkms$foursu_introns#
+labeledRpkms$introns_var <- rpkms$foursu_introns#
+#
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL)
+k1v1 <- ratesFirstGuess(mycerIds, 'synthesis')#
+k1v2 <- out$rates$alpha
+plot(k1v1, k1v2)
+plot(k1v1, k1v2, log='xy')
+abline(0,1,col='red')
+str(out)
+out$labeledSF
+labeledSF(mycerIds)
+tL
+plot(out$labeledSF, labeledSF(mycerIds))
+abline(0,1)
+debug(newINSPEcT)
+mycerIds <- newINSPEcT(tpts, tL, rpkms$foursu_exons, rpkms$total_exons,#
+        rpkms$foursu_introns, rpkms$total_introns, BPPARAM=SerialParam())
+debug(.getRatesAndConcentrationsFromRpkms)
+c
+str(geneNames)
+totalSF
+Q
+undebug(newINSPEcT)
+mycerIds <- newINSPEcT(tpts, tL, rpkms$foursu_exons, rpkms$total_exons,#
+	rpkms$foursu_introns, rpkms$total_introns, #
+	totalMedianNorm=FALSE, BPPARAM=SerialParam())
+undebug(.getRatesAndConcentrationsFromRpkms)
+Q
+mycerIds <- newINSPEcT(tpts, tL, rpkms$foursu_exons, rpkms$total_exons,#
+	rpkms$foursu_introns, rpkms$total_introns, #
+	totalMedianNorm=FALSE, BPPARAM=SerialParam())
+totRpkms <- list()#
+totRpkms$exons       <- rpkms$total_exons - rpkms$total_introns#
+totRpkms$exons_var   <- rpkms$total_exons - rpkms$total_introns#
+totRpkms$introns     <- rpkms$total_introns#
+totRpkms$introns_var <- rpkms$total_introns#
+#
+labeledRpkms <- list()#
+labeledRpkms$exons       <- rpkms$foursu_exons#
+labeledRpkms$exons_var   <- rpkms$foursu_exons#
+labeledRpkms$introns     <- rpkms$foursu_introns#
+labeledRpkms$introns_var <- rpkms$foursu_introns
+out <- make_priors_complete(totRpkms, labeledRpkms, tpts, tL) #
+#
+k1v1 <- ratesFirstGuess(mycerIds, 'synthesis')#
+k1v2 <- out$rates$alpha
+plot(k1v1, k1v2)
+abline(0,1)
+abline(0,1,col='red')
+k2v1 <- ratesFirstGuess(mycerIds, 'processing')#
+k2v2 <- out$rates$gamma#
+#
+k3v1 <- ratesFirstGuess(mycerIds, 'degradation')#
+k3v2 <- out$rates$beta
+plot(k2v1, k2v2)
+abline(0,1,col='red')
+plot(k3v1, k3v2)
+abline(0,1,col='red')
+cor(k1v1, k1v2)
+cor(k1v1[,2], k1v2[,2])
+cor(k2v1, k2v2)
+cor(k3v1, k3v2)
+plot(k2v1[,2], k1v2[,2])
+plot(k2v1[,2], k2v2[,2])
+table(is.na(k2v1[,2]), is.na(k2v2[,2]))
+table(is.na(k3v1[,2]), is.na(k3v2[,2]))
+str(k3v1[,2])
+str(k3v2[,2])
+str(unname(k3v2[,2]))
+str(unname(k3v1[,2]))
+identical(unname(k3v1[,2]),unname(k3v2[,2]))
+identical(unname(k3v1[1:10,2]),unname(k3v2[1:10,2]))
+identical(unname(k3v1[1:20,2]),unname(k3v2[1:20,2]))
+sum()(unname(k3v1[1:20,2]) - unname(k3v2[1:20,2]))^2)
+sum((unname(k3v1[1:20,2]) - unname(k3v2[1:20,2]))^2)
+sum((unname(k3v1[1:20,2]) - unname(k3v2[1:20,2]))^2,na.rm=T)
+mycerIds <- newINSPEcT(tpts, tL, rpkms$foursu_exons, rpkms$total_exons,#
+	rpkms$foursu_introns, rpkms$total_introns, degDuringPulse=TRUE,#
+	totalMedianNorm=FALSE, BPPARAM=SerialParam())
+out <- make_priors_complete_ddp(totRpkms, labeledRpkms, tpts, tL)
+lmOut <- lm(c(1:10)~c(21:30))
+lmOut
+lmOut <- lm(c(1:2)~c(1:2))
+lmOut <- lm(c(1,10)~c(1,10))
+lmOut
+lmOut <- lm(c(2,20)~c(1,10))
+lmOut
+predict(lmOut, 3)
+predict(lmOut)
+?predict
+predict(lmOut, newdata=2)
+predict(lmOut, newdata=data.frame(2))
+?predict.lm
+predict(lmOut, data.frame(x=2))
+x <- rnorm(15)#
+y <- x + rnorm(15)#
+predict(lm(y ~ x))#
+new <- data.frame(x = seq(-3, 3, 0.5))#
+predict(lm(y ~ x), new, se.fit = TRUE)
+predict(lm(y ~ x))
+predict(lm(y ~ x), new, se.fit = FALSE)
+predict(lm(y ~ x), new)
+predict(lm(y ~ x), data.frame(x=2))
+str(predict(lm(y ~ x), data.frame(x=2)))
+unname(predict(lm(y ~ x), data.frame(x=2)))
+unname(predict(lm(y ~ x), data.frame(k=2)))
+str(lm(y~x))
+k <- y
+str(lm(k~x))
+load('/tmp/pol2_model/tmp.RData')
+gene <- metagenes_list_wt_Myc_dep
+gene
+gene <- metagenes_list_wt_Myc_dep[[1]]
+gene
+tpts <- c(0,2,4,8)
+tpts
+imputed_gene <- gene
+for( i in 1:ncol(imputed_gene) ) {#
+			for( j in 1:nrow(imputed_gene) ) {#
+				if( is.na(imputed_gene[j,i]) ) {#
+					if( j == 1 ) stop('na cannot be at time zero')#
+					lower_boundary_j <- j-1#
+					higher_boundary_j <- j+1#
+					while( is.na(imputed_gene[higher_boundary_j,i]) ) {#
+						higher_boundary_j <- higher_boundary_j + 1#
+						if( higher_boundary_j>nrow(imputed_gene) )#
+							stop('na cannot be at last time point')#
+					}#
+					x <- tpts[c(lower_boundary_j,higher_boundary_j)]#
+					y <- imputed_gene[c(lower_boundary_j,higher_boundary_j),i]#
+					imputed_gene[(lower_boundary_j+1):(higher_boundary_j-1),i] <- predict(lm(y ~ x), #
+						data.frame(x=tpts[(lower_boundary_j+1):(higher_boundary_j-1)])#
+				}#
+			}#
+		}
+for( i in 1:ncol(imputed_gene) ) {#
+			for( j in 1:nrow(imputed_gene) ) {#
+				if( is.na(imputed_gene[j,i]) ) {#
+					if( j == 1 ) stop('na cannot be at time zero')#
+					lower_boundary_j <- j-1#
+					higher_boundary_j <- j+1#
+					while( is.na(imputed_gene[higher_boundary_j,i]) ) {#
+						higher_boundary_j <- higher_boundary_j + 1#
+						if( higher_boundary_j>nrow(imputed_gene) )#
+							stop('na cannot be at last time point')#
+					}#
+					x <- tpts[c(lower_boundary_j,higher_boundary_j)]#
+					y <- imputed_gene[c(lower_boundary_j,higher_boundary_j),i]#
+					imputed_gene[(lower_boundary_j+1):(higher_boundary_j-1),i] <- predict(lm(y ~ x), #
+						data.frame(x=tpts[(lower_boundary_j+1):(higher_boundary_j-1)]))#
+				}#
+			}#
+		}
+imputed_gne
+imputed_gene
+gene
+gene[3,3]
+gene[3,3] <- NA
+gene
+imputed_gene <- gene
+for( i in 1:ncol(imputed_gene) ) {#
+			for( j in 1:nrow(imputed_gene) ) {#
+				if( is.na(imputed_gene[j,i]) ) {#
+					if( j == 1 ) stop('na cannot be at time zero')#
+					lower_boundary_j <- j-1#
+					higher_boundary_j <- j+1#
+					while( is.na(imputed_gene[higher_boundary_j,i]) ) {#
+						higher_boundary_j <- higher_boundary_j + 1#
+						if( higher_boundary_j>nrow(imputed_gene) )#
+							stop('na cannot be at last time point')#
+					}#
+					x <- tpts[c(lower_boundary_j,higher_boundary_j)]#
+					y <- imputed_gene[c(lower_boundary_j,higher_boundary_j),i]#
+					imputed_gene[(lower_boundary_j+1):(higher_boundary_j-1),i] <- predict(lm(y ~ x), #
+						data.frame(x=tpts[(lower_boundary_j+1):(higher_boundary_j-1)]))#
+				}#
+			}#
+		}
+imputed_gene
+gene
+metagenes_list_wt_Myc_dep[[1]]
+gene
+gene <- metagenes_list_wt_Myc_dep[[1]]
+gene
+observed_gene_values <- gene
+if( any(is.na(gene)) & na.rm == TRUE ) {#
+		for( i in 1:ncol(gene) ) {#
+			for( j in 1:nrow(gene) ) {#
+				if( is.na(gene[j,i]) ) {#
+					if( j == 1 ) stop('na cannot be at time zero')#
+					lower_boundary_j <- j-1#
+					higher_boundary_j <- j+1#
+					while( is.na(gene[higher_boundary_j,i]) ) {#
+						higher_boundary_j <- higher_boundary_j + 1#
+						if( higher_boundary_j>nrow(gene) )#
+							stop('na cannot be at last time point')#
+					}#
+					x <- tpts[c(lower_boundary_j,higher_boundary_j)]#
+					y <- gene[c(lower_boundary_j,higher_boundary_j),i]#
+					gene[(lower_boundary_j+1):(higher_boundary_j-1),i] <- predict(lm(y ~ x), #
+						data.frame(x=tpts[(lower_boundary_j+1):(higher_boundary_j-1)]))#
+				}#
+			}#
+		}#
+	}
+for( i in 1:ncol(gene) ) {#
+			for( j in 1:nrow(gene) ) {#
+				if( is.na(gene[j,i]) ) {#
+					if( j == 1 ) stop('na cannot be at time zero')#
+					lower_boundary_j <- j-1#
+					higher_boundary_j <- j+1#
+					while( is.na(gene[higher_boundary_j,i]) ) {#
+						higher_boundary_j <- higher_boundary_j + 1#
+						if( higher_boundary_j>nrow(gene) )#
+							stop('na cannot be at last time point')#
+					}#
+					x <- tpts[c(lower_boundary_j,higher_boundary_j)]#
+					y <- gene[c(lower_boundary_j,higher_boundary_j),i]#
+					gene[(lower_boundary_j+1):(higher_boundary_j-1),i] <- predict(lm(y ~ x), #
+						data.frame(x=tpts[(lower_boundary_j+1):(higher_boundary_j-1)]))#
+				}#
+			}#
+		}
+gene
+observed_gene_values
+gDer <- rbind(0,diff(gene[,-4])/diff(tpts))
+gDer
+pol2guess <- t(sapply(1:nrow(gene), function(j)#
+		c(p1=gDer[j,1]+gDer[j,2]+gene[j,4],#
+			p2=(gDer[j,2]+gene[j,4])/gene[j,1],#
+			p3=gene[j,4]/gene[j,2],#
+			p4=(gene[j,4]-gDer[j,3])/gene[j,3])))
+pol2guess
+source('/tmp/pol2_model/00_library_of_functions.R')
+tpts
+gene
+gene <- metagenes_list_wt_Myc_dep[[1]]
+gene
+rnapii_model(tpts, gene, model_type='KKKK')
+rates
+initparams <- unlist(lapply(rates, '[[', 'params'))
+oderrorfun(initparams, tpts=tpts, rates=rates, gene=gene, var=geneVar)
+gene
+pol2guess
+Q
+source('/tmp/pol2_model/00_library_of_functions.R')
+gene
+?sum
+source('/tmp/pol2_model/00_library_of_functions.R')
+rnapii_model(tpts, gene, model_type='KKKK')
+Q
+rnapii_model(tpts, gene, model_type='KKKK')
+observed_gene_values
+is.na(observed_gene_values)
+!is.na(observed_gene_values)
+which(!is.na(observed_gene_values)))
+which(!is.na(observed_gene_values))
+length(which(!is.na(observed_gene_values)))
+Q
+source('/tmp/pol2_model/00_library_of_functions.R')
+rnapii_model(tpts, gene, model_type='KKKK',na.rm=TRUE)
+rnapii_model(tpts, gene, model_type='SKKK',na.rm=FALSE)
+rnapii_model(tpts, gene, model_type='SKKK',na.rm=TRUE)
+cv(c(115697.0,151009.8,123252.3,130282.9,142666.2))
+cv <- function(x) sd(x)/mean(x)
+cv(c(115697.0,151009.8,123252.3,130282.9,142666.2))
+cv(c(64038.43,71556.35,64896.57,67318.94,69562.95))
+library(shiny)
+runApp('~/Dropbox/source/shinyAppImportINSPEcT_v6/')
+tmp <- readRDS('~/Dropbox/source/shinyAppImportINSPEcT_v6/mycerIds_20genes.rds')
+tmp
+featureNames(tmp)
+sort(featureNames(tmp))
+sort(featureNames(tmp))[2]
+id <- sort(featureNames(tmp))[2]
+exprs(tmp@ratesFirstGuess)[id,]
+exprs(tmp@modelRates)[id,]
+runApp('~/Dropbox/source/shinyAppImportINSPEcT_v6/')
+print(values$k3_h0)
+runApp('~/Dropbox/source/shinyAppImportINSPEcT_v6/')
+prova <- read.table('/tmp/prova.sam')
+prova <- readLines('/tmp/prova.sam')
+str(prova)
+prova[1]
+prova_spl <- strplit(prova,'\t')
+prova_spl <- strsplit(prova,'\t')
+head(prova_spl)
+prova_spl[[1]]
+prova_spl[[1]][10]
+prova_spl[[1]][10] <- '*'
+prova_spl[[1]][11] <- '*'
+head(prova_spl)
+for(i in 1:length(prova_spl)) {}
+for(i in 1:length(prova_spl)) {prova_spl[[i]][10] <- prova_spl[[i]][11] <- '*'}
+head(prova_spl)
+prova_mod <- sapply(prova_spl, paste, sep='\t')
+str(prova_mod)
+prova_mod <- sapply(prova_spl, paste, collapse='\t')
+str(prova_mod)
+?writeLines
+writeLines(prova_mod, con='/tmp/prova_mod.sam')
+setwd('Dropbox/source/shinyAppImportINSPEcT_v8/')
+library(shiny)
+runApp()

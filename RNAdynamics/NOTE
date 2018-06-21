@@ -1,0 +1,3 @@
+10/12/18
+- BUG trovato, la checkbox "Space time logaritmically" rimane attiva nella modalità "User defined" e se selezionata porta alla visualizzazione dei dati sperimentali, senza cambiare i limiti degli assi
+- IDEA una possibile visualizzazione alternativa dei grafici è quella di mettere nello stesso pannello le rates e in un altro le concentrazioni, tutte normalizzate al loro tempo 0 in modo che siano sulla stessa scala. in questo modo però, nella modalità con i dati bisognerebbe trasformare anche la loro varianza, dividendola per il quadrato della loro tempo 0
