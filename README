@@ -1,0 +1,9 @@
+# To run the shiny apps digit in the R console:
+
+library(shiny)
+runApp('/path/to/the/app/ProcessingRateDelay')
+
+# or 
+
+library(shiny)
+runApp('/path/to/the/app/RNAdynamics')
