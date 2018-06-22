@@ -1,9 +1,11 @@
+# Both applications require the packages INSPEcT and shiny installed
+
 # To run the shiny apps digit in the R console:
 
-library(shiny)
-runApp('/path/to/the/app/ProcessingRateDelay')
+if( require(shiny) & require(INSPEcT) )
+  runApp('/path/to/the/app/ProcessingRateDelay')
 
 # or 
 
-library(shiny)
-runApp('/path/to/the/app/RNAdynamics')
+if( require(shiny) & require(INSPEcT) )
+  runApp('/path/to/the/app/RNAdynamics')
