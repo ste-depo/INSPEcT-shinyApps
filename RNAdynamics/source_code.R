@@ -210,7 +210,7 @@ plot_gene_fun <- function(data_selection, show_logtime, logshift,
 	transf_tpts <- time_transf(experiment_tpts, logshift)
 	
 	sim <- deterministic_simulation(
-		logshift, transf_simulation_time, 
+		logshift, simulation_time, 
 		k1_function, k2_function, k3_function, 
 		k1_params, k2_params, k3_params)
 
@@ -439,11 +439,11 @@ plot_gene_fun <- function(data_selection, show_logtime, logshift,
 constantModel <- function(x , par, log_shift) rep(par, length(x))
 
 sigmoidModel <- function(x, par, log_shift) 
-	par[1]+(par[2]-par[1])*(1/(1+exp(-par[4]*(x-time_transf(par[3],log_shift)))))
+	par[1]+(par[2]-par[1])*(1/(1+exp(-par[4]*(time_transf(x,log_shift)-time_transf(par[3],log_shift)))))
 
 impulseModel <- function(x, par, log_shift) 
-	1/par[2]*(par[1]+(par[2]-par[1])*(1/(1+exp(-par[6]*(x-time_transf(par[4],log_shift))))))*
-	(par[3]+(par[2]-par[3])*(1/(1+exp(par[6]*(x-time_transf(par[5],log_shift))))))
+	1/par[2]*(par[1]+(par[2]-par[1])*(1/(1+exp(-par[6]*(time_transf(x,log_shift)-time_transf(par[4],log_shift))))))*
+	(par[3]+(par[2]-par[3])*(1/(1+exp(par[6]*(time_transf(x,log_shift)-time_transf(par[5],log_shift))))))
 
 #############################
 ## SIMULATION FUNCTION ######
@@ -583,11 +583,11 @@ modelChisq <- function(par, tpts, fun, df, alpha_exp, alpha_var #, pval
 	#
 	params <- list()
 	params$alpha <- function(x) 
-		fun$alpha$value(time_transf(x, log_shift), splitpar$alpha, log_shift)
+		fun$alpha$value(x, splitpar$alpha, log_shift)
 	params$beta  <- function(x)
-		fun$beta$value(time_transf(x, log_shift), splitpar$beta, log_shift)
+		fun$beta$value(x, splitpar$beta, log_shift)
 	params$gamma <- function(x)
-		fun$gamma$value(time_transf(x, log_shift), splitpar$gamma, log_shift)
+		fun$gamma$value(x, splitpar$gamma, log_shift)
 	#
 	cinit <- c(params$alpha(tpts[1]) / params$gamma(tpts[1])
 		, params$alpha(tpts[1]) / params$beta(tpts[1]))
